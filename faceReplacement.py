@@ -7,6 +7,7 @@ from scipy.spatial import Delaunay
 from Project4A.getFeatures import getFeatures
 
 # img1 and img2 are nxn numpy matricies
+# noinspection PyInterpreter
 def faceReplacement(img1, img2):
 
     #do face detection and get bounding boxes

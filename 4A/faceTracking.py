@@ -3,15 +3,15 @@
   Author: Kashish Gupta, Rajat Bhageria, Rajiv Patel-Oconnor
   Date created: 11/19/17
 '''
-import cv2
-import imageio
 import numpy as np
-
-from Project4A.applyGeometricTransformation import applyGeometricTransformation
-from Project4A.detectFace import detectFace
-from Project4A.estimateAllTranslation import estimateAllTranslation
-from Project4A.getFeatures import getFeatures
-from Project4A.helper import plotPoints
+import cv2
+import matplotlib.pyplot as plt
+import imageio
+from detectFace import detectFace
+from getFeatures import getFeatures
+from estimateAllTranslation import estimateAllTranslation
+from applyGeometricTransformation import applyGeometricTransformation
+from helper import plotPoints
 
 '''
   File clarification:
