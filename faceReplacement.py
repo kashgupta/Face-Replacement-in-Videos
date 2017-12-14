@@ -1,6 +1,6 @@
 import cv2
 import PyNet as net
-from Project4A.detectFace import detectFace
+from detectFace import detectFace
 from scipy.spatial import Delaunay
 from Project4A.getFeatures import getFeatures
 import numpy as np
