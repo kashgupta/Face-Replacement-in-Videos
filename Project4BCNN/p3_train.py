@@ -4,11 +4,11 @@
   Date: 12-7-17
 '''
 
-import PyNet as net
 import numpy as np
 from matplotlib import pyplot as plt
-from p3_dataloader import p3_dataloader
-import cv2
+
+import PyNet as net
+from Project4BCNN.p3_dataloader import p3_dataloader
 
 '''
   network architecture construction

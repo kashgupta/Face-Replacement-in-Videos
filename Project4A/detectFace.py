@@ -21,7 +21,7 @@ def detectFace(img):
     #returns (x, y, w, h) for each face in the pic
     faces = faceCascade.detectMultiScale(img_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30),
                                        flags = cv2.CASCADE_SCALE_IMAGE)
-    
+
     #If we want to detect side-profile faces, aka faces that are not facing forward
     #then uncomment the below lines
     #faceCascade_side = cv2.CascadeClassifier('haarcascade_profileface.xml')

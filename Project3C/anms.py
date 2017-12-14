@@ -4,7 +4,7 @@
   Date created: Nov 7, 2017
 '''
 import numpy as np
-from helpers import distance
+from Project3C.helpers import distance
 
 
 def anms(cimg, max_pts):

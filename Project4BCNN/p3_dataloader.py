@@ -3,9 +3,11 @@
   Author: Kashish Gupta
   Date: 12-13-17
 '''
-import numpy as np
-import PyNet
 import cv2
+import numpy as np
+
+import PyNet
+
 
 def p3_dataloader():
     xy_labels = np.loadtxt('training.txt', usecols=range(1,11))
