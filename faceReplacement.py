@@ -34,8 +34,8 @@ def faceReplacement(img1, img2):
     features2 = np.hstack((xFeatures2,yFeatures2))
 
     #get the two convex hulls for the images
-    convexHull1 = cv2.convexHull(features1, returnPoints=False)
-    convexHull2 = cv2.convexHull(features2, returnPoints=False)
+    convexHull1 = cv2.convexHull(features1, returnPoints=True)
+    convexHull2 = cv2.convexHull(features2, returnPoints=True)
 
     #append the facial landmarks and the convexhulls together
     img1Features = np.vstack((landmarksImg1,convexHull1))
