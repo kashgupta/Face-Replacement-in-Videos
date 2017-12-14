@@ -1,8 +1,9 @@
 import cv2
 import PyNet as net
-from detectFace import detectFace
+from proj4AdetectFace import detectFace
 from scipy.spatial import Delaunay
-from Project4A.getFeatures import getFeatures
+from proj4AgetFeatures import getFeatures
+from proj3Chelpers import rgb2gray
 import numpy as np
 #from getConvexHull import getConvexHull
 
@@ -20,12 +21,16 @@ def faceReplacement(img1, img2):
     myModel = net.Model.load_model("Project4BCNN/500.pickle")
     landmarksImg1 = myModel.forward(img1)
     landmarksImg2 = myModel.forward(img2)
+    
+    #getRGB image
+    img1_gray = rgb2gray(img1)
+    img2_gray = rgb2gray(img2)
 
     #get the facial features for the image
     #returns 250xnumFaces points for x locations and y locations
-    xFeatures1, yFeatures1 = getFeatures(img1, bboxImg1)
+    xFeatures1, yFeatures1 = getFeatures(img1_gray, bboxImg1)
     features1 = np.hstack((xFeatures1,yFeatures1))
-    xFeatures2, yFeatures2 = getFeatures(img2, bboxImg2)
+    xFeatures2, yFeatures2 = getFeatures(img2_gray, bboxImg2)
     features2 = np.hstack((xFeatures2,yFeatures2))
 
     #get the two convex hulls for the images
