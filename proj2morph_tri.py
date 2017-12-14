@@ -22,7 +22,6 @@ from scipy.spatial import Delaunay
 import numpy as np
 from helpers import calculateAFromIdx, get_rgb
 
-
 def morph_tri(im1, im2, im1_pts, im2_pts, warp_frac, dissolve_frac):
 
     # initialize variables

@@ -4,7 +4,9 @@ from proj4AdetectFace import detectFace
 from scipy.spatial import Delaunay
 from proj4AgetFeatures import getFeatures
 from proj3Chelpers import rgb2gray
+from proj4AgetFeatures import getFeatures
 import numpy as np
+from facialLandmark import facialLandmark
 #from getConvexHull import getConvexHull
 
 # img1 and img2 are nxn numpy matricies
@@ -16,11 +18,15 @@ def faceReplacement(img1, img2):
     bboxImg1 = detectFace(img1)
     bboxImg2 = detectFace(img2)
 
-    #get facial landmarks
+    #get facial landmarks from the PyNet CNN
     #returns nx2 locations of the features
-    myModel = net.Model.load_model("Project4BCNN/500.pickle")
-    landmarksImg1 = myModel.forward(img1)
-    landmarksImg2 = myModel.forward(img2)
+    # myModel = net.Model.load_model("Project4BCNN/500.pickle")
+    # landmarksImg1 = myModel.forward(img1)
+    # landmarksImg2 = myModel.forward(img2)
+
+    #get facial landmarks from dlibs 
+    landmarksImg1 = facialLandmark(img1)
+    landmarksImg2 = facialLandmark(img2)
     
     #getRGB image
     img1_gray = rgb2gray(img1)
