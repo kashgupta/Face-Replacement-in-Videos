@@ -3,14 +3,14 @@
   Author: Kashish Gupta, Rajat Bhageria, Rajiv Patel-Oconnor
   Date created: 11/19/17
 '''
-import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 import imageio
-from detectFace import detectFace
-from getFeatures import getFeatures
-from estimateAllTranslation import estimateAllTranslation
+import numpy as np
+
 from applyGeometricTransformation import applyGeometricTransformation
+from detectFace import detectFace
+from estimateAllTranslation import estimateAllTranslation
+from getFeatures import getFeatures
 from helper import plotPoints
 
 '''

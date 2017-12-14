@@ -1,10 +1,8 @@
 import cv2
-
 import PyNet as net
 from Project4A.detectFace import detectFace
 from scipy.spatial import Delaunay
 #from getConvexHull import getConvexHull
-from Project4A.getFeatures import getFeatures
 
 # img1 and img2 are nxn numpy matricies
 # noinspection PyInterpreter
