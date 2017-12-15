@@ -7,8 +7,19 @@ from proj2helpers import calculateAFromIdx, get_rgb
 import numpy as np
 from facialLandmark import facialLandmark
 import sys
+import matplotlib.pyplot as plt
 #from getConvexHull import getConvexHull
 
+
+def applyAffineTransform(src, srcTri, dstTri, size) :
+    
+    # Given a pair of triangles, find the affine transform.
+    warpMat = cv2.getAffineTransform( np.float32(srcTri), np.float32(dstTri) )
+    
+    # Apply the Affine Transform just found to the src image
+    dst = cv2.warpAffine( src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101 )
+
+    return dst
 # img1 and img2 are nxn numpy matricies
 # noinspection PyInterpreter
 def faceReplacement(img1, img2):
@@ -75,6 +86,10 @@ def faceReplacement(img1, img2):
     tri1 = Delaunay(img1Features).simplices
     tri2 = Delaunay(img2Features).simplices
 
+    minPtsTri = np.min([tri1.shape[0],tri2.shape[0]])
+    tri1 = tri1[0:minPtsTri,:]
+    tri2 = tri2[0:minPtsTri,:]
+
     [numTriangles1,_,] = tri1.shape
     [numTriangles2,_,] = tri2.shape
 
@@ -82,49 +97,24 @@ def faceReplacement(img1, img2):
 
     #img2 = 255 * np.ones(img_in.shape, dtype=img_in.dtype)
 
-    #do the warping for each of the triangles
-    for triangle in range(0,numTriangles):
-        srcTriangle = tri1[triangle,:]
-        destTriangle = tri2[triangle,:]
-
-        r1 = cv2.boundingRect(srcTriangle)
-        r2 = cv2.boundingRect(destTriangle)
-
-    #do affine warp of the triangles
-
-    #find transform for eachTriangle
-    simplices1 = tri1.simplices
-    simplices2 = tri2.simplices
-
     #allocate memory
-    loAffineTransforms12 = np.zeros((len(simplices1), 2, 3)) #store affine for 1 -> 2
-    loAffineTransforms21 = np.zeros((len(simplices1), 2, 3)) #store affine for 2 -> 1
-    pts1 = np.zeros((3,2))
-    pts2 = np.zeros((3,2))
+    loAffineTransforms12 = np.zeros((len(tri1), 2, 3)) #store affine for 1 -> 2
+    loAffineTransforms21 = np.zeros((len(tri1), 2, 3)) #store affine for 2 -> 1
+    pts1 = np.zeros((3,2), dtype=np.float32)
+    pts2 = np.zeros((3,2), dtype=np.float32)
 
     #calculate transform for each triangle in both directions
-    for i in range(len(simplices1)):
-        pts1[0] = img1Features[simplices1[i][0]]
-        pts1[1] = img1Features[simplices1[i][1]]
-        pts1[2] = img1Features[simplices1[i][2]]
+    for i in range(len(tri1)):
+        pts1[0] = img1Features[tri1[i][0]]
+        pts1[1] = img1Features[tri1[i][1]]
+        pts1[2] = img1Features[tri1[i][2]]
 
-        pts2[0] = img2Features[simplices2[i][0]]
-        pts2[1] = img2Features[simplices2[i][1]]
-        pts2[2] = img2Features[simplices2[i][2]]
+        pts2[0] = img2Features[tri2[i][0]]
+        pts2[1] = img2Features[tri2[i][1]]
+        pts2[2] = img2Features[tri2[i][2]]
 
-        loAffineTransforms12[i] = cv2.AffineTransform(pts1, pts2)
-        loAffineTransforms21[i] = cv2.AffineTransform(pts1, pts2)
-
-    #warp each triangle
-    for i in range(len(simplices1)):
-        #get points for rect
-        pts1[0] = img1Features[simplices1[i][0]]
-        pts1[1] = img1Features[simplices1[i][1]]
-        pts1[2] = img1Features[simplices1[i][2]]
-        
-        pts2[0] = img2Features[simplices2[i][0]]
-        pts2[1] = img2Features[simplices2[i][1]]
-        pts2[2] = img2Features[simplices2[i][2]]
+        loAffineTransforms12[i] = cv2.getAffineTransform(pts1, pts2)
+        loAffineTransforms21[i] = cv2.getAffineTransform(pts2, pts1)
         
         r1 = cv2.boundingRect(pts1)
         r2 = cv2.boundingRect(pts2)
@@ -140,24 +130,26 @@ def faceReplacement(img1, img2):
         # Get mask by filling triangle
         mask = np.zeros((r1[3], r1[2], 3), dtype = np.float32)
         cv2.fillConvexPoly(mask, np.int32(t1Rect), (1.0, 1.0, 1.0), 16, 0);
+        plt.imshow(mask)
         
         # Apply warpImage to small rectangular patches
         img1Rect = img1[r1[1]:r1[1] + r1[3], r1[0]:r1[0] + r1[2]]
         img2Rect = img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]]
         
         #Apply Affine
-        cv2.warpAffine(img1Rect, loAffineTransforms12[i])
-        cv2.warpAffine(img2Rect, loAffineTransforms21[i])
+        size1 = (r1[2], r1[3])
+        size2 = (r2[2], r2[3])
+        warp1 = cv2.warpAffine(img1Rect, loAffineTransforms12[i],(size1[0], size1[1]), None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101 )
+        warp2 = cv2.warpAffine(img2Rect, loAffineTransforms21[i],(size2[0], size2[1]), None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101 )
         
-        img1[r1[1]:r1[1]+r1[3], r1[0]:r1[0]+r1[2]] = img[r[1]:r[1]+r[3], r[0]:r[0]+r[2]] * ( 1 - mask ) + imgRect * mask
-        
-        
-        
-        
-        
-        
-        
-        
+        # Thing at the end
+        img2Rect = warp1 * mask
+
+        # Copy triangular region of the rectangular patch to the output image
+        img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] = img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] * ( (1.0, 1.0, 1.0) - mask )
+         
+        img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] = img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] + img2Rect 
+            
         
     #blending if want to
     #we can call this function
