@@ -71,59 +71,7 @@ def faceReplacement(img1, img2):
     #do affine warp of the triangles
     
 
-    #Get simplices
-    simplices1 = tri1.simplices
-    simplices2 = tri2.simplices
-    
-        
-    # Calculate A for all triangles
-    loA = []
-    for i in range(len(simplices1)):
-
-        vtx1 = img1Features[simplices1[i][0]]
-        vtx2 = img1Features[simplices1[i][1]]
-        vtx3 = img1Features[simplices1[i][2]]
-            
-        A = [
-            [vtx1[0], vtx2[0], vtx3[0]],
-            [vtx1[1], vtx2[1], vtx3[1]],
-            [1, 1, 1]
-            ]
-                 
-        loA.append(A)
-        
-        #find size of bbox
-        xMin = np.amin(bboxImg1[0,:,0])
-        xMax = np.amax(bboxImg1[0,:,0])
-        yMin = np.amin(bboxImg1[0,:,1])
-        yMax = np.amax(bboxImg1[0,:,1])
-        xSize = xMax - xMin
-        ySize = yMax - yMin
-        
-        
-        replacementFace = np.zeros((ySize, xSize, 3))
-        for y in range(yMin, yMax):
-            for x in range(xMin, xMax):
-                if(tri1.find_simplex(np.array([x,y])) == -1):
-                    continue
-                else:
-                    # Calculate barycentric coordinates
-                    tri = tri1.find_simplex(np.array([x, y]))
-                    alpha_beta_gamma = np.dot(np.linalg.inv(loA[tri]), np.asarray([[x], [y], [1]]))
-                    
-                    # Calculate corresponding coordinates
-                    src_A = calculateAFromIdx(tri, img2Features, simplices2)
-                    src_coord = np.dot(src_A, alpha_beta_gamma)
-                    
-                    # Normalization (divide by 'Z')
-                    src_coord = src_coord/src_coord[2][0]
-                    
-                    # Interpolate to get RGB
-                    src_rgb = get_rgb(src_coord[0][0], src_coord[1][0], img2)
-                    
-                    # Build Source Image
-                    replacementFace[y - yMin][x - xMin] = src_rgb
-    
+   
 
     #blending if want to
     #we can call this function
