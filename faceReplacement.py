@@ -70,7 +70,34 @@ def faceReplacement(img1, img2):
 
     #do affine warp of the triangles
     
-
+    #find transform for eachTriangle
+    simplices1 = tri1.simplices
+    simplices2 = tri2.simplices
+    
+    #allocate memory
+    loAffineTransforms12 = np.zeros((len(simplices1), 2, 3)) #store affine for 1 -> 2
+    loAffineTransforms21 = np.zeros((len(simplices1), 2, 3)) #store affine for 2 -> 1
+    pts1 = np.zeros((3,2))
+    pts2 = np.zeros((3,2))
+    
+    #calculate transform for each triangle in both directions
+    for i in range(len(simplices1)):
+        pts1[0] = img1Features[simplices1[i][0]]
+        pts1[1] = img1Features[simplices1[i][1]]
+        pts1[2] = img1Features[simplices1[i][2]]
+        
+        pts2[0] = img2Features[simplices2[i][0]]
+        pts2[1] = img2Features[simplices2[i][1]]
+        pts2[2] = img2Features[simplices2[i][2]]
+        
+        loAffineTransforms12[i] = cv2.AffineTransform(pts1, pts2)
+        loAffineTransforms21[i] = cv2.AffineTransform(pts1, pts2)
+    
+    
+        
+        
+        
+        
    
 
     #blending if want to
