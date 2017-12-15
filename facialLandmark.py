@@ -14,7 +14,7 @@ def facialLandmark(img):
     dets = detector(gray, 0)
 
     for k, d in enumerate(dets):
-        shape = predictor(img, d)
+        shape = predictor(gray, d)
 
     vec = np.empty([68, 2], dtype=int)
     for b in range(68):
