@@ -4,6 +4,7 @@ from proj4AdetectFace import detectFace
 from scipy.spatial import Delaunay
 from proj4AgetFeatures import getFeatures
 from proj3Chelpers import rgb2gray
+from proj4Ahelper import overlay_points
 import numpy as np
 #from getConvexHull import getConvexHull
 
@@ -36,6 +37,10 @@ def faceReplacement(img1, img2):
     #get the two convex hulls for the images
     convexHull1 = cv2.convexHull(features1, returnPoints=True)
     convexHull2 = cv2.convexHull(features2, returnPoints=True)
+    
+    #visualize overlay
+    overlay_points(img1, convexHull1[:,:,0], convexHull1[:,:,1])
+    overlay_points(img2, convexHull2[:,:,0], convexHull2[:,:,1])
 
     #append the facial landmarks and the convexhulls together
     img1Features = np.vstack((landmarksImg1,convexHull1))

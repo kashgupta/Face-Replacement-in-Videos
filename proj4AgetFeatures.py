@@ -21,8 +21,8 @@ def getFeatures(img, bbox):
     r,c = img.shape
     boxed_img = np.zeros(img.shape, np.uint8)
     [numFaces, numCorners, coords] = bbox.shape
-    xOutput = np.zeros((250, numFaces), dtype=np.int_)
-    yOutput = np.zeros((250, numFaces), dtype=np.int_)
+    xOutput = np.zeros((100, numFaces), dtype=np.int_)
+    yOutput = np.zeros((100, numFaces), dtype=np.int_)
     count = 0
     for arr in bbox :
         x1 = arr[0,0]
@@ -36,7 +36,7 @@ def getFeatures(img, bbox):
 
         #suppress everything except for the top 1000 points
         features_sorted = np.sort(features_array, axis=None)
-        thresh = features_sorted[-250]
+        thresh = features_sorted[-100]
         features_array[features_array < thresh] = 0
         features_array[features_array > 0] = 1
         features_array = features_array.astype(bool)
@@ -45,13 +45,13 @@ def getFeatures(img, bbox):
         x = x[features_array]
         y = y[features_array]
     
-        if x.size > 250 :
-            x = x[0:250]
-            y = y[0:250]
+        if x.size > 100 :
+            x = x[0:100]
+            y = y[0:100]
         #we pad the array with 0's so that we always have 250 points of interest no matter what
-        elif x.size < 250 :
-            x_pad = np.zeros([250], np.int)
-            y_pad = np.zeros([250], np.int)
+        elif x.size < 100 :
+            x_pad = np.zeros([100], np.int)
+            y_pad = np.zeros([100], np.int)
             x_pad[0 : x.size] = x
             y_pad[0 : y.size] = y
             x = x_pad

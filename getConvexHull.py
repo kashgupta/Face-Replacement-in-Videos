@@ -18,29 +18,26 @@ import cv2
 '''
 
 
-    edges = cv2.Canny(img1, 50, 150, 3)
-    ret, thresh = cv2.threshold(img1, 127, 255, 0)
-    [_, contours, _] = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cnt = contours[4]
-    hullIndex1 = cv2.convexHull(cnt, returnPoints=False)
-
-
 def getConvexHull(img, bbox):
     # we only care about pixels that are within bounding boxes
     # the below for loop creates a new image called boxed_img that includes only the pixels in bounding boxes
-    r, c = img.shape
     boxed_img = np.zeros(img.shape, np.uint8)
     [numFaces, numCorners, coords] = bbox.shape
-    xOutput = np.zeros((250, numFaces), dtype=np.int_)
-    yOutput = np.zeros((250, numFaces), dtype=np.int_)
-    count = 0
     for arr in bbox:
         x1 = arr[0, 0]
         y1 = arr[0, 1]
         x2 = arr[3, 0]
         y2 = arr[3, 1]
         boxed_img[y1:y2 + 1, x1:x2 + 1] = img[y1:y2 + 1, x1:x2 + 1]
-
+        #edges = cv2.Canny(img, 50, 150, 3)
+        imgray = cv2.cvtColor(boxed_img,cv2.COLOR_BGR2GRAY)
+        ret, thresh = cv2.threshold(imgray, 127, 255, 0)
+        im2, contours, heirarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        hullPoints = cv2.convexHull(contours, returnPoints=True)
+        
+        
+        
+        '''
         # now we do corner detection
         features_array = feature.corner_shi_tomasi(boxed_img, sigma=1)
 
@@ -69,6 +66,7 @@ def getConvexHull(img, bbox):
         xOutput[:, count] = x
         yOutput[:, count] = y
         count += 1
+        '''
 
     '''
     #automatic thresholding
@@ -79,7 +77,7 @@ def getConvexHull(img, bbox):
     thresholded_features = thresholdInBBox(features_array, minX, maxX, minY, maxY)
     x, y, rmax = anms(thresholded_features, 100)
     '''
-    x = xOutput
-    y = yOutput
+    x = hullPoints[:,:,0]
+    y = hullPoints[:,:,1]
 
     return x, y
