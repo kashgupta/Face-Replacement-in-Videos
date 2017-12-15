@@ -100,7 +100,27 @@ def faceReplacement(img1, img2):
         pts1[1] = img1Features[simplices1[i][1]]
         pts1[2] = img1Features[simplices1[i][2]]
         
-        x,y,w,h = cv2.boundingRect(pts) 
+        pts2[0] = img2Features[simplices2[i][0]]
+        pts2[1] = img2Features[simplices2[i][1]]
+        pts2[2] = img2Features[simplices2[i][2]]
+        
+        r1 = cv2.boundingRect(pts1)
+        r2 = cv2.boundingRect(pts2)
+        
+        # Offset points by left top corner of the respective rectangles
+        t1Rect = []
+        t2Rect = []
+        
+        for i in range(0, 3):
+            t1Rect.append(((pts1[i][0] - r1[0]),(pts1[i][1] - r1[1])))
+            t2Rect.append(((pts2[i][0] - r2[0]),(pts2[i][1] - r2[1])))
+        
+        
+        
+        
+        
+        
+        
         
         
         
