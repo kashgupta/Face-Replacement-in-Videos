@@ -1,4 +1,4 @@
-#from faceReplacement import faceReplacement
+from faceReplacement import faceReplacement
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from proj4AdetectFace import detectFace
@@ -16,22 +16,24 @@ def main():
     img1=mpimg.imread(img1File)
     img2=mpimg.imread(img2File)
 
-    #[newImg1, newImg2] = faceReplacement(img1, img2)
+    [newImg1, newImg2] = faceReplacement(img1, img2)
 
-    bboxImg1 = detectFace(img1)
-    bboxImg2 = detectFace(img2)
-    plt.imshow(img1)
+    # bboxImg1 = detectFace(img1)
+    # bboxImg2 = detectFace(img2)
+    # plt.imshow(img1)
+    #
+    # pts = facialLandmark(img1)
+    #
+    # tri1 = Delaunay(pts)
 
-    pts = facialLandmark(img1)
+    #print tri1.simplices[0,:]
 
-    tri1 = Delaunay(pts)
+    #plt.triplot(pts[:, 0], pts[:, 1], tri1.simplices.copy())
 
-    plt.triplot(pts[:, 0], pts[:, 1], tri1.simplices.copy())
+    #hull = ConvexHull(pts)
 
-    hull = ConvexHull(pts)
-
-    plt.plot(pts[hull.vertices, 0], pts[hull.vertices, 1], 'r--', lw=2)
-    plt.show()
+    #plt.plot(pts[hull.vertices, 0], pts[hull.vertices, 1], 'r--', lw=2)
+    #plt.show()
 
 if __name__ ==  "__main__":
     main()
