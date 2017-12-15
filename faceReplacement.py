@@ -93,7 +93,14 @@ def faceReplacement(img1, img2):
         loAffineTransforms12[i] = cv2.AffineTransform(pts1, pts2)
         loAffineTransforms21[i] = cv2.AffineTransform(pts1, pts2)
     
-    
+    #warp each triangle
+    for i in range(len(simplices1)):
+        #get points for rect
+        pts1[0] = img1Features[simplices1[i][0]]
+        pts1[1] = img1Features[simplices1[i][1]]
+        pts1[2] = img1Features[simplices1[i][2]]
+        
+        x,y,w,h = cv2.boundingRect(pts) 
         
         
         
