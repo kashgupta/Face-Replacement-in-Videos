@@ -136,6 +136,20 @@ def faceReplacement(img1, img2):
         for i in range(0, 3):
             t1Rect.append(((pts1[i][0] - r1[0]),(pts1[i][1] - r1[1])))
             t2Rect.append(((pts2[i][0] - r2[0]),(pts2[i][1] - r2[1])))
+            
+        # Get mask by filling triangle
+        mask = np.zeros((r1[3], r1[2], 3), dtype = np.float32)
+        cv2.fillConvexPoly(mask, np.int32(t1Rect), (1.0, 1.0, 1.0), 16, 0);
+        
+        # Apply warpImage to small rectangular patches
+        img1Rect = img1[r1[1]:r1[1] + r1[3], r1[0]:r1[0] + r1[2]]
+        img2Rect = img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]]
+        
+        #Apply Affine
+        cv2.warpAffine(img1Rect, loAffineTransforms12[i])
+        cv2.warpAffine(img2Rect, loAffineTransforms21[i])
+        
+        img1[r1[1]:r1[1]+r1[3], r1[0]:r1[0]+r1[2]] = img[r[1]:r[1]+r[3], r[0]:r[0]+r[2]] * ( 1 - mask ) + imgRect * mask
         
         
         
