@@ -12,88 +12,91 @@ import cv2
 import dlib
 from facialLandmark import facialLandmark
 from scipy.spatial import ConvexHull
+from scipy.spatial import Delaunay
 
-# Read points from text file
-def readPoints(path) :
-    # Create an array of points.
-    points = [];
-    
-    # Read points
-    with open(path) as file :
-        for line in file :
-            x, y = line.split()
-            points.append((int(x), int(y)))
-    
+# # Read points from text file
+# def readPoints(path) :
+#     # Create an array of points.
+#     points = [];
+#
+#     # Read points
+#     with open(path) as file :
+#         for line in file :
+#             x, y = line.split()
+#             points.append((int(x), int(y)))
+#
+#
+#     return points
 
-    return points
+
+#
+# # Check if a point is inside a rectangle
+# def rectContains(rect, point) :
+#     if point[0] < rect[0] :
+#         return False
+#     elif point[1] < rect[1] :
+#         return False
+#     elif point[0] > rect[0] + rect[2] :
+#         return False
+#     elif point[1] > rect[1] + rect[3] :
+#         return False
+#     return True
+
+
+# #calculate delanauy triangle
+# def calculateDelaunayTriangles(rect, points):
+#     #create subdiv
+#     subdiv = cv2.Subdiv2D(rect);
+#
+#     # Insert points into subdiv
+#     for p in points:
+#         subdiv.insert(p)
+#
+#     triangleList = subdiv.getTriangleList();
+#
+#     delaunayTri = []
+#
+#     pt = []
+#
+#     count= 0
+#
+#     for t in triangleList:
+#         pt.append((t[0], t[1]))
+#         pt.append((t[2], t[3]))
+#         pt.append((t[4], t[5]))
+#
+#         pt1 = (t[0], t[1])
+#         pt2 = (t[2], t[3])
+#         pt3 = (t[4], t[5])
+#
+#         if rectContains(rect, pt1) and rectContains(rect, pt2) and rectContains(rect, pt3):
+#             count = count + 1
+#             ind = []
+#             for j in xrange(0, 3):
+#                 for k in xrange(0, len(points)):
+#                     if(abs(pt[j][0] - points[k][0]) < 1.0 and abs(pt[j][1] - points[k][1]) < 1.0):
+#                         ind.append(k)
+#             if len(ind) == 3:
+#                 delaunayTri.append((ind[0], ind[1], ind[2]))
+#
+#         pt = []
+#
+#
+#     return delaunayTri
+#
 
 # Apply affine transform calculated using srcTri and dstTri to src and
 # output an image of size.
-def applyAffineTransform(src, srcTri, dstTri, size) :
-    
+def applyAffineTransform(src, srcTri, dstTri, size):
     # Given a pair of triangles, find the affine transform.
-    warpMat = cv2.getAffineTransform( np.float32(srcTri), np.float32(dstTri) )
-    
+    warpMat = cv2.getAffineTransform(np.float32(srcTri), np.float32(dstTri))
+
     # Apply the Affine Transform just found to the src image
-    dst = cv2.warpAffine( src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101 )
+    dst = cv2.warpAffine(src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,
+                         borderMode=cv2.BORDER_REFLECT_101)
 
     return dst
 
-
-# Check if a point is inside a rectangle
-def rectContains(rect, point) :
-    if point[0] < rect[0] :
-        return False
-    elif point[1] < rect[1] :
-        return False
-    elif point[0] > rect[0] + rect[2] :
-        return False
-    elif point[1] > rect[1] + rect[3] :
-        return False
-    return True
-
-
-#calculate delanauy triangle
-def calculateDelaunayTriangles(rect, points):
-    #create subdiv
-    subdiv = cv2.Subdiv2D(rect);
-    
-    # Insert points into subdiv
-    for p in points:
-        subdiv.insert(p) 
-    
-    triangleList = subdiv.getTriangleList();
-    
-    delaunayTri = []
-    
-    pt = []    
-    
-    count= 0    
-    
-    for t in triangleList:        
-        pt.append((t[0], t[1]))
-        pt.append((t[2], t[3]))
-        pt.append((t[4], t[5]))
-        
-        pt1 = (t[0], t[1])
-        pt2 = (t[2], t[3])
-        pt3 = (t[4], t[5])        
-        
-        if rectContains(rect, pt1) and rectContains(rect, pt2) and rectContains(rect, pt3):
-            count = count + 1 
-            ind = []
-            for j in xrange(0, 3):
-                for k in xrange(0, len(points)):                    
-                    if(abs(pt[j][0] - points[k][0]) < 1.0 and abs(pt[j][1] - points[k][1]) < 1.0):
-                        ind.append(k)                            
-            if len(ind) == 3:                                                
-                delaunayTri.append((ind[0], ind[1], ind[2]))
-        
-        pt = []        
-            
-    
-    return delaunayTri
-        
 
 # Warps and alpha blends triangular regions from img1 and img2 to img
 def warpTriangle(img1, img2, t1, t2) :
@@ -175,6 +178,13 @@ if __name__ == '__main__' :
     #     hull1 = .append(points1[int(indices[i])])
     #     hull2.append(points2[int(indices[i])])
 
+
+    # # Find delanauy traingulation for convex hull points
+    # sizeImg2 = img2.shape
+    # rect = (0, 0, sizeImg2[1], sizeImg2[0])
+    # dt = calculateDelaunayTriangles(rect, hull2)
+
+
     # Read images
     filename1 = './data/easy/MarquesBrownlee0.jpg'
     filename2 = './data/easy/TheMartian0.jpg'
@@ -195,16 +205,15 @@ if __name__ == '__main__' :
     hull1 = tuple(map(tuple, hull1))
     hull2 = tuple(map(tuple, hull2))
 
+    dt = Delaunay(hull2).simplices
+    dt = tuple(map(tuple, dt))
 
-    # Find delanauy traingulation for convex hull points
-    sizeImg2 = img2.shape    
-    rect = (0, 0, sizeImg2[1], sizeImg2[0])
-     
-    dt = calculateDelaunayTriangles(rect, hull2)
-    
+    print dt
+
     if len(dt) == 0:
         quit()
-    
+
+
     # Apply affine transformation to Delaunay triangles
     for i in xrange(0, len(dt)):
         t1 = []
@@ -217,7 +226,8 @@ if __name__ == '__main__' :
         
         warpTriangle(img1, img1Warped, t1, t2)
     
-            
+
+
     # Calculate Mask
     hull8U = []
     for i in xrange(0, len(hull2)):
