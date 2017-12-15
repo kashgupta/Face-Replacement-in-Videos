@@ -193,40 +193,39 @@ if __name__ == '__main__' :
     img1Warped = np.copy(img2);
 
     #find the landmarks
-    points1 = facialLandmark(img1)#.tolist()
-    points2 = facialLandmark(img2)#.tolist()
+    points1 = facialLandmark(img1)
+    points2 = facialLandmark(img2)
 
     #get the convex hull
     indices = cv2.convexHull(np.array(points2), returnPoints = False)
     hull1 = points1[indices[:,0]]
     hull2 = points2[indices[:,0]]
 
-    #convert to tuple list
+    #convert hulls to tuple list
     hull1 = tuple(map(tuple, hull1))
     hull2 = tuple(map(tuple, hull2))
 
-    dt = Delaunay(hull2).simplices
-    dt = tuple(map(tuple, dt))
+    #create delanuy triangulation
+    tri = Delaunay(hull2).simplices
+    tri = tuple(map(tuple, tri))
 
-    print dt
+    #for each of the triangles, do the affine warp
+    numTriangles = len(tri)
+    for i in range(0, numTriangles):
+        triangle = tri[i]
+        t1 = np.zeros((3, 2), dtype=np.float32)
+        t2 = np.zeros((3, 2), dtype=np.float32)
 
-    if len(dt) == 0:
-        quit()
+        # calculate transform for each triangle in both directions
+        t1[0] = hull1[triangle[0]]
+        t1[1] = hull1[triangle[1]]
+        t1[2] = hull1[triangle[2]]
 
+        t2[0] = hull2[triangle[0]]
+        t2[1] = hull2[triangle[1]]
+        t2[2] = hull2[triangle[2]]
 
-    # Apply affine transformation to Delaunay triangles
-    for i in xrange(0, len(dt)):
-        t1 = []
-        t2 = []
-        
-        #get points for img1, img2 corresponding to the triangles
-        for j in xrange(0, 3):
-            t1.append(hull1[dt[i][j]])
-            t2.append(hull2[dt[i][j]])
-        
         warpTriangle(img1, img1Warped, t1, t2)
-    
-
 
     # Calculate Mask
     hull8U = []
