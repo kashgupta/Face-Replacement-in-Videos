@@ -10,6 +10,8 @@ import sys
 import numpy as np
 import cv2
 import dlib
+from facialLandmark import facialLandmark
+from scipy.spatial import ConvexHull
 
 # Read points from text file
 def readPoints(path) :
@@ -132,62 +134,68 @@ def warpTriangle(img1, img2, t1, t2) :
     
 
 if __name__ == '__main__' :
-    
-    # Make sure OpenCV is version 3.0 or above
-    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 
-    if int(major_ver) < 3 :
-        print >>sys.stderr, 'ERROR: Script needs OpenCV 3.0 or higher'
-        sys.exit(1)
+    # detector = dlib.get_frontal_face_detector()  # Face detector
+    # predictor = dlib.shape_predictor(
+    #     "shape_predictor_68_face_landmarks.dat")  # Landmark identifier. Set the filename to whatever you named the downloaded file
 
-        
-    detector = dlib.get_frontal_face_detector() #Face detector
-    predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat") #Landmark identifier. Set the filename to whatever you named the downloaded file
+    #
+    # # Get the face coordinates in Image1
+    # gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    # # #clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    # # #clahe_image = clahe.apply(gray)
+    # points1 = []
+    #
+    # detections = detector(gray, 1) #Detect the faces in the image
+    # for k,d in enumerate(detections): #For each detected face
+    #     shape = predictor(gray, d) #Get coordinates
+    #     for i in range(1,68): #There are 68 landmark points on each face
+    #         points1.append((shape.part(i).x, shape.part(i).y))
+    #
+    # # Get the face coordinates in Image2
+    # gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    # clahe_image = clahe.apply(gray)
+    # points2 = []
+    #
+    # detections = detector(clahe_image, 1) #Detect the faces in the image
+    # for k,d in enumerate(detections): #For each detected face
+    #     shape = predictor(clahe_image, d) #Get coordinates
+    #     for i in range(1,68): #There are 68 landmark points on each face
+    #         points2.append((shape.part(i).x, shape.part(i).y))
+    #
+    # print points1
+
+    # Find convex hull
+    #hull1 = []
+    #hull2 = []
+    # hull1 = np.zeros(indices.shape[0],2)
+    # for i in xrange(0, len(indices)):
+    #
+    #     hull1 = .append(points1[int(indices[i])])
+    #     hull2.append(points2[int(indices[i])])
 
     # Read images
-    filename1 = './data/easy/MarquesBrownlee.jpg'
-    filename2 = './data/easy/TheMartian.jpg'
-    
+    filename1 = './data/easy/MarquesBrownlee0.jpg'
+    filename2 = './data/easy/TheMartian0.jpg'
     img1 = cv2.imread(filename1);
     img2 = cv2.imread(filename2);
-    img1Warped = np.copy(img2);    
+    img1Warped = np.copy(img2);
 
-    
-    # Get the face coordinates in Image1
-    gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    clahe_image = clahe.apply(gray)
-    points1 = []
+    #find the landmarks
+    points1 = facialLandmark(img1)#.tolist()
+    points2 = facialLandmark(img2)#.tolist()
 
-    detections = detector(clahe_image, 1) #Detect the faces in the image
-    for k,d in enumerate(detections): #For each detected face
-        shape = predictor(clahe_image, d) #Get coordinates
-        for i in range(1,68): #There are 68 landmark points on each face
-            points1.append((shape.part(i).x, shape.part(i).y))
-            
-    # Get the face coordinates in Image2
-    gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    clahe_image = clahe.apply(gray)
-    points2 = []
-    
-    detections = detector(clahe_image, 1) #Detect the faces in the image
-    for k,d in enumerate(detections): #For each detected face
-        shape = predictor(clahe_image, d) #Get coordinates
-        for i in range(1,68): #There are 68 landmark points on each face
-            points2.append((shape.part(i).x, shape.part(i).y))
-                        
-    # Find convex hull
-    hull1 = []
-    hull2 = []
+    #get the convex hull
+    indices = cv2.convexHull(np.array(points2), returnPoints = False)
+    hull1 = points1[indices[:,0]]
+    hull2 = points2[indices[:,0]]
 
-    hullIndex = cv2.convexHull(np.array(points2), returnPoints = False)
-          
-    for i in xrange(0, len(hullIndex)):
-        hull1.append(points1[int(hullIndex[i])])
-        hull2.append(points2[int(hullIndex[i])])
-    
-    
+    #convert to tuple list
+    hull1 = tuple(map(tuple, hull1))
+    hull2 = tuple(map(tuple, hull2))
+
+
     # Find delanauy traingulation for convex hull points
     sizeImg2 = img2.shape    
     rect = (0, 0, sizeImg2[1], sizeImg2[0])

@@ -29,37 +29,10 @@ def faceReplacement(img1, img2):
     bboxImg1 = detectFace(img1)
     bboxImg2 = detectFace(img2)
 
-    #get facial landmarks from the PyNet CNN
-    #returns nx2 locations of the features
-    # myModel = net.Model.load_model("Project4BCNN/500.pickle")
-    # landmarksImg1 = myModel.forward(img1)
-    # landmarksImg2 = myModel.forward(img2)
-
     #get facial landmarks from dlibs
     #nx2 each
     landmarksImg1 = facialLandmark(img1)
     landmarksImg2 = facialLandmark(img2)
-
-    print (landmarksImg1.shape, landmarksImg2.shape)
-    
-    # #getRGB image
-    # img1_gray = rgb2gray(img1)
-    # img2_gray = rgb2gray(img2)
-    #
-    # #get the facial features for the image
-    # #returns 250xnumFaces points for x locations and y locations
-    # xFeatures1, yFeatures1 = getFeatures(img1_gray, bboxImg1)
-    # features1 = np.hstack((xFeatures1,yFeatures1))
-    # xFeatures2, yFeatures2 = getFeatures(img2_gray, bboxImg2)
-    # features2 = np.hstack((xFeatures2,yFeatures2))
-    #
-    # #get the two convex hulls for the images
-    # convexHull1 = cv2.convexHull(features1, returnPoints=True)
-    # convexHull2 = cv2.convexHull(features2, returnPoints=True)
-
-    #get the triangulations
-    tri1 = Delaunay(landmarksImg1)
-    tri2 = Delaunay(landmarksImg2)
 
     #get the convex hulls
     hull1 = ConvexHull(landmarksImg1)
@@ -150,7 +123,7 @@ def faceReplacement(img1, img2):
          
         img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] = img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] + img2Rect 
             
-        
+
     #blending if want to
     #we can call this function
     #output = cv2.seamlessClone(src, dst, mask, center, cv2.NORMAL_CLONE)

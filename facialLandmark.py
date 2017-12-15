@@ -16,8 +16,9 @@ def facialLandmark(img):
     for k, d in enumerate(dets):
         shape = predictor(gray, d)
 
-    vec = np.empty([68, 2], dtype=int)
+    vec = np.empty([68,2], dtype=int) #[]
     for b in range(68):
+        #vec.append((shape.part(b).x, shape.part(b).y))
         vec[b][0] = shape.part(b).x
         vec[b][1] = shape.part(b).y
 

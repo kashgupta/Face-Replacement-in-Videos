@@ -16,6 +16,8 @@ def main():
     img1=mpimg.imread(img1File)
     img2=mpimg.imread(img2File)
 
+    img1Warped = np.copy(img2);
+
     [newImg1, newImg2] = faceReplacement(img1, img2)
 
     # bboxImg1 = detectFace(img1)
