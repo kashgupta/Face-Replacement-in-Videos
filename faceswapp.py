@@ -235,16 +235,12 @@ if __name__ == '__main__' :
 
         warpTriangle(img1, img1Warped, t1, t2)
 
+    #do blending
+    mask = np.zeros(img2.shape, dtype=img2.dtype)
     hull8U = np.copy(hull2)
-    mask = np.zeros(img2.shape, dtype = img2.dtype)
     cv2.fillConvexPoly(mask, np.int32(hull8U), (255, 255, 255))
-    
-    r = cv2.boundingRect(np.float32([hull2]))    
-    
+    r = cv2.boundingRect(np.float32([hull2]))
     center = ((r[0]+int(r[2]/2), r[1]+int(r[3]/2)))
-        
-    
-    # Clone seamlessly.
     output = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, center, cv2.NORMAL_CLONE)
     
     cv2.imshow("Face Swapped", output)
