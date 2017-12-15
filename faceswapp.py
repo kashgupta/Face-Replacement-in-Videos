@@ -184,6 +184,12 @@ if __name__ == '__main__' :
     # rect = (0, 0, sizeImg2[1], sizeImg2[0])
     # dt = calculateDelaunayTriangles(rect, hull2)
 
+    # Calculate Mask
+    # hull8U = []
+    # #hull8U = np.zeros(hull2.shape)
+    # for i in range(0, len(hull2)):
+    #     hull8U.append((hull2[i][0], hull2[i][1]))
+
 
     # Read images
     #filename1 = './data/easy/MarquesBrownlee0.jpg'
@@ -229,13 +235,7 @@ if __name__ == '__main__' :
 
         warpTriangle(img1, img1Warped, t1, t2)
 
-    # Calculate Mask
-    hull8U = []
-    #hull8U = np.zeros(hull2.shape)
-    for i in range(0, len(hull2)):
-        hull8U.append((hull2[i][0], hull2[i][1]))
-
-    #hull8U = np.copy(hull2)
+    hull8U = np.copy(hull2)
     mask = np.zeros(img2.shape, dtype = img2.dtype)
     cv2.fillConvexPoly(mask, np.int32(hull8U), (255, 255, 255))
     
