@@ -186,8 +186,10 @@ if __name__ == '__main__' :
 
 
     # Read images
-    filename1 = './data/easy/MarquesBrownlee0.jpg'
-    filename2 = './data/easy/TheMartian0.jpg'
+    #filename1 = './data/easy/MarquesBrownlee0.jpg'
+    #filename2 = './data/easy/TheMartian0.jpg'
+    filename1= 'ted_cruz.jpg'
+    filename2= 'donald_trump.jpg'
     img1 = cv2.imread(filename1);
     img2 = cv2.imread(filename2);
     img1Warped = np.copy(img2);
@@ -229,11 +231,12 @@ if __name__ == '__main__' :
 
     # Calculate Mask
     hull8U = []
-    for i in xrange(0, len(hull2)):
+    #hull8U = np.zeros(hull2.shape)
+    for i in range(0, len(hull2)):
         hull8U.append((hull2[i][0], hull2[i][1]))
-    
-    mask = np.zeros(img2.shape, dtype = img2.dtype)  
-    
+
+    #hull8U = np.copy(hull2)
+    mask = np.zeros(img2.shape, dtype = img2.dtype)
     cv2.fillConvexPoly(mask, np.int32(hull8U), (255, 255, 255))
     
     r = cv2.boundingRect(np.float32([hull2]))    
