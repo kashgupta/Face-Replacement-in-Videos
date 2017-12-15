@@ -88,15 +88,9 @@ from scipy.spatial import Delaunay
 # Apply affine transform calculated using srcTri and dstTri to src and
 # output an image of size.
 def applyAffineTransform(src, srcTri, dstTri, size):
-    # Given a pair of triangles, find the affine transform.
     warpMat = cv2.getAffineTransform(np.float32(srcTri), np.float32(dstTri))
-
-    # Apply the Affine Transform just found to the src image
-    dst = cv2.warpAffine(src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,
-                         borderMode=cv2.BORDER_REFLECT_101)
-
+    dst = cv2.warpAffine(src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101)
     return dst
-
 
 # Warps and alpha blends triangular regions from img1 and img2 to img
 def warpTriangle(img1, img2, t1, t2) :
@@ -235,7 +229,7 @@ if __name__ == '__main__' :
 
         warpTriangle(img1, img1Warped, pts1, pts2)
 
-    #do blending
+    #get the mask of only the hull for blending
     mask = np.zeros(img2.shape, dtype=img2.dtype)
     cv2.fillConvexPoly(mask, np.int32(hull2), (255, 255, 255))
 
@@ -243,8 +237,10 @@ if __name__ == '__main__' :
     r = cv2.boundingRect(np.float32([hull2]))
     faceCenter = (r[0]+int(r[2]/2), r[1]+int(r[3]/2))
 
+    #do the blending
     finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
-    
+
+    #show the reesult
     cv2.imshow('image', finalImage)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
