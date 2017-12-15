@@ -3,8 +3,12 @@ import PyNet as net
 from proj4AdetectFace import detectFace
 from scipy.spatial import Delaunay
 from proj4AgetFeatures import getFeatures
+from scipy.spatial import ConvexHull
+
 from proj3Chelpers import rgb2gray
 from proj4AgetFeatures import getFeatures
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import numpy as np
 from facialLandmark import facialLandmark
 #from getConvexHull import getConvexHull
@@ -24,28 +28,45 @@ def faceReplacement(img1, img2):
     # landmarksImg1 = myModel.forward(img1)
     # landmarksImg2 = myModel.forward(img2)
 
-    #get facial landmarks from dlibs 
+    #get facial landmarks from dlibs
+    #nx2 each
     landmarksImg1 = facialLandmark(img1)
     landmarksImg2 = facialLandmark(img2)
     
-    #getRGB image
-    img1_gray = rgb2gray(img1)
-    img2_gray = rgb2gray(img2)
+    # #getRGB image
+    # img1_gray = rgb2gray(img1)
+    # img2_gray = rgb2gray(img2)
+    #
+    # #get the facial features for the image
+    # #returns 250xnumFaces points for x locations and y locations
+    # xFeatures1, yFeatures1 = getFeatures(img1_gray, bboxImg1)
+    # features1 = np.hstack((xFeatures1,yFeatures1))
+    # xFeatures2, yFeatures2 = getFeatures(img2_gray, bboxImg2)
+    # features2 = np.hstack((xFeatures2,yFeatures2))
+    #
+    # #get the two convex hulls for the images
+    # convexHull1 = cv2.convexHull(features1, returnPoints=True)
+    # convexHull2 = cv2.convexHull(features2, returnPoints=True)
 
-    #get the facial features for the image
-    #returns 250xnumFaces points for x locations and y locations
-    xFeatures1, yFeatures1 = getFeatures(img1_gray, bboxImg1)
-    features1 = np.hstack((xFeatures1,yFeatures1))
-    xFeatures2, yFeatures2 = getFeatures(img2_gray, bboxImg2)
-    features2 = np.hstack((xFeatures2,yFeatures2))
+    #get the triangulations
+    tri1 = Delaunay(landmarksImg1)
+    tri2 = Delaunay(landmarksImg2)
 
-    #get the two convex hulls for the images
-    convexHull1 = cv2.convexHull(features1, returnPoints=True)
-    convexHull2 = cv2.convexHull(features2, returnPoints=True)
+    #get the convex hulls
+    hull1 = ConvexHull(landmarksImg1)
+    hull2 = ConvexHull(landmarksImg2)
+
+    #plot the image
+    #plt.imshow(img1)
+    #plot the triangulation
+    #plt.triplot(landmarksImg1[:, 0], landmarksImg1[:, 1], tri1.simplices.copy())
+    #plot the hull
+    #plt.plot(landmarksImg1[hull1.vertices, 0], landmarksImg1[hull1.vertices, 1], 'r--', lw=2)
+    #plt.show()
 
     #append the facial landmarks and the convexhulls together
-    img1Features = np.vstack((landmarksImg1,convexHull1))
-    img2Features = np.vstack((landmarksImg2,convexHull2))
+    img1Features = np.vstack((landmarksImg1,hull1.verticies))
+    img2Features = np.vstack((landmarksImg2,hull2.verticies))
 
     #create delanuy triangulation
     tri1 = Delaunay(img1Features)
