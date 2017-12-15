@@ -194,56 +194,57 @@ if __name__ == '__main__' :
     # Read images
     #filename1 = './data/easy/MarquesBrownlee0.jpg'
     #filename2 = './data/easy/TheMartian0.jpg'
-    filename1= 'ted_cruz.jpg'
-    filename2= 'donald_trump.jpg'
-    img1 = cv2.imread(filename1);
-    img2 = cv2.imread(filename2);
+    file1= 'ted_cruz.jpg'
+    file2= 'donald_trump.jpg'
+    img1 = cv2.imread(file1);
+    img2 = cv2.imread(file2);
     img1Warped = np.copy(img2);
 
     #find the landmarks
-    points1 = facialLandmark(img1)
-    points2 = facialLandmark(img2)
+    landmarks1 = facialLandmark(img1)
+    landmarks2 = facialLandmark(img2)
 
     #get the convex hull
-    indices = cv2.convexHull(np.array(points2), returnPoints = False)
-    hull1 = points1[indices[:,0]]
-    hull2 = points2[indices[:,0]]
-
+    indices = cv2.convexHull(np.array(landmarks2), returnPoints = False)
+    hull1 = landmarks1[indices[:,0]]
+    hull2 = landmarks2[indices[:,0]]
     #convert hulls to tuple list
     hull1 = tuple(map(tuple, hull1))
     hull2 = tuple(map(tuple, hull2))
 
     #create delanuy triangulation
     tri = Delaunay(hull2).simplices
+    #conver to tuple list
     tri = tuple(map(tuple, tri))
 
     #for each of the triangles, do the affine warp
     numTriangles = len(tri)
     for i in range(0, numTriangles):
         triangle = tri[i]
-        t1 = np.zeros((3, 2), dtype=np.float32)
-        t2 = np.zeros((3, 2), dtype=np.float32)
+        pts1 = np.zeros((3, 2), dtype=np.float32)
+        pts2 = np.zeros((3, 2), dtype=np.float32)
 
         # calculate transform for each triangle in both directions
-        t1[0] = hull1[triangle[0]]
-        t1[1] = hull1[triangle[1]]
-        t1[2] = hull1[triangle[2]]
+        pts1[0] = hull1[triangle[0]]
+        pts1[1] = hull1[triangle[1]]
+        pts1[2] = hull1[triangle[2]]
 
-        t2[0] = hull2[triangle[0]]
-        t2[1] = hull2[triangle[1]]
-        t2[2] = hull2[triangle[2]]
+        pts2[0] = hull2[triangle[0]]
+        pts2[1] = hull2[triangle[1]]
+        pts2[2] = hull2[triangle[2]]
 
-        warpTriangle(img1, img1Warped, t1, t2)
+        warpTriangle(img1, img1Warped, pts1, pts2)
 
     #do blending
     mask = np.zeros(img2.shape, dtype=img2.dtype)
-    hull8U = np.copy(hull2)
-    cv2.fillConvexPoly(mask, np.int32(hull8U), (255, 255, 255))
+    cv2.fillConvexPoly(mask, np.int32(hull2), (255, 255, 255))
+
+    #find the center of the face to do the blending
     r = cv2.boundingRect(np.float32([hull2]))
-    center = ((r[0]+int(r[2]/2), r[1]+int(r[3]/2)))
-    output = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, center, cv2.NORMAL_CLONE)
+    faceCenter = (r[0]+int(r[2]/2), r[1]+int(r[3]/2))
+
+    finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
     
-    cv2.imshow("Face Swapped", output)
+    cv2.imshow('image', finalImage)
     cv2.waitKey(0)
-    
     cv2.destroyAllWindows()
