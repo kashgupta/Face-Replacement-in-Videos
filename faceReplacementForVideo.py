@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from faceswapp import faceSwap
 import imageio
-from 4CHelpers import videoToNumpy
+from helpers4C import videoToNumpy
 
 def faceReplacementForVideo(video1, video2):
     '''
