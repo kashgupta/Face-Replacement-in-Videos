@@ -3,10 +3,8 @@ import numpy as np
 
 def applyAffineTransform(src, srcTri, dstTri, size):
     warpMat = cv2.getAffineTransform(np.float32(srcTri), np.float32(dstTri))
-    dst = cv2.warpAffine(src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,
-                         borderMode=cv2.BORDER_REFLECT_101)
+    dst = cv2.warpAffine(src, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
     return dst
-
 
 # Warps and alpha blends triangular regions from img1 and img2 to img
 def warpTriangle(img1, img2, t1, t2):
@@ -19,6 +17,7 @@ def warpTriangle(img1, img2, t1, t2):
     t2Rect = []
     t2RectInt = []
 
+    #iterate over the three points
     for i in range(0, 3):
         t1Rect.append(((t1[i][0] - r1[0]), (t1[i][1] - r1[1])))
         t2Rect.append(((t2[i][0] - r2[0]), (t2[i][1] - r2[1])))
@@ -34,11 +33,13 @@ def warpTriangle(img1, img2, t1, t2):
     # get the size of the rectangle
     size = (r2[2], r2[3])
 
+    #do the affine transformation
+    #i think we should acutally do the call here since it's only 3 lines and would make our code more different
     img2Rect = applyAffineTransform(img1Rect, t1Rect, t2Rect, size)
 
+    #get the masked rectangle
     img2Rect = img2Rect * mask
 
     # Copy triangular region of the rectangular patch to the output image
-    img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] = img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] * (
-    (1.0, 1.0, 1.0) - mask)
+    img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] = img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] * ((1.0, 1.0, 1.0) - mask)
     img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] = img2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]] + img2Rect
