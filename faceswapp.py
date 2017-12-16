@@ -129,7 +129,7 @@ def warpTriangle(img1, img2, t1, t2) :
     img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] = img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] + img2Rect 
     
 
-if __name__ == '__main__' :
+def faceSwap(img1, img2):
 
     # detector = dlib.get_frontal_face_detector()  # Face detector
     # predictor = dlib.shape_predictor(
@@ -187,10 +187,10 @@ if __name__ == '__main__' :
     # Read images
     #filename1 = './data/easy/MarquesBrownlee0.jpg'
     #filename2 = './data/easy/TheMartian0.jpg'
-    file1= 'ted_cruz.jpg'
-    file2= 'donald_trump.jpg'
-    img1 = cv2.imread(file1);
-    img2 = cv2.imread(file2);
+    #file1= 'ted_cruz.jpg'
+    #file2= 'donald_trump.jpg'
+    #img1 = cv2.imread(file1);
+    #img2 = cv2.imread(file2);
     img1Warped = np.copy(img2);
 
     #find the landmarks
@@ -240,6 +240,7 @@ if __name__ == '__main__' :
     finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
 
     #show the reesult
-    cv2.imshow('image', finalImage)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #cv2.imshow('image', finalImage)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+    return finalImage.astype(np.int_)

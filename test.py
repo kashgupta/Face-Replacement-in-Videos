@@ -1,4 +1,4 @@
-from faceReplacement import faceReplacement
+from faceReplacementForVideo import faceReplacementForVideo
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from proj4AdetectFace import detectFace
@@ -10,12 +10,12 @@ import numpy as np
 
 def main():
 
-    img2File = "Data/Easy/TheMartian0.jpg"
-    img1File = "Data/Easy/MarquesBrownlee0.jpg"
+    video1 = "./Data/Easy/TheMartian.mp4"
+    video2 = "./Data/Easy/MarquesBrownlee.mp4"
     #file1= 'ted_cruz.jpg'
     #file2= 'donald_trump.jpg'
 
-    [newImg1] = faceReplacement(img1File, img2File)
+    faceReplacementForVideo(video1, video2)
 
 if __name__ ==  "__main__":
     main()
