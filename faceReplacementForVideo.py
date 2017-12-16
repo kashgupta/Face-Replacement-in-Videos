@@ -4,16 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from faceswapp import faceSwap
 import imageio
-
-def videoToNumpy(filepath):
-    vidcap = cv2.VideoCapture(filepath)
-    success,image = vidcap.read()
-    success = True
-    listOfFrames = []
-    while success:
-        success,image = vidcap.read()
-        listOfFrames.append(image) # add to list
-    return listOfFrames
+from 4CHelpers import videoToNumpy
 
 def faceReplacementForVideo(video1, video2):
     '''
