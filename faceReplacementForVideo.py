@@ -60,8 +60,6 @@ def faceReplacementForVideo(video1, video2):
     '''
     frames1 = videoToNumpy(video1)
     frames2 = videoToNumpy(video2)
-    print len(frames1)
-    print len(frames2)
     landmarks1 = [];
     landmarks2 = [];
     '''
@@ -77,11 +75,12 @@ def faceReplacementForVideo(video1, video2):
             img1 = frames2[len(frames2) - 1]
         print(i)
         swappedVid1[i], landmarks1, landmarks2 = faceSwap(img1, frames1[i], landmarks1, landmarks2)
+        
+    '''
 
     #Allocate Memory for swapped vid 2
     [h2, w2, _] = frames2[0].shape
     swappedVid2 = np.zeros((len(frames2) - 1, h2, w2, 3), dtype=np.uint8)
-    '''
 
     #Generate frames for swapped vid 2
     for j in range(len(frames2) - 1):
@@ -91,11 +90,13 @@ def faceReplacementForVideo(video1, video2):
             img1 = frames1[len(frames1) - 1]
         print j
         swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceSwap(img1, frames2[j], landmarks1, landmarks2)
+        if j == 0:
+            plt.imsave('image0.png', swappedVid2[0])
 
     #np.save('swap21.npy', swappedVid2)
     #imageio.mimwrite('swap12.avi', swappedVid1, 30)
     #imageio.mimwrite('swap21.mp4', swappedVid2, fps=30)
-    skvideo.io.write("swap12.mp4", swappedVid1)
+    #skvideo.io.write("swap12.mp4", swappedVid1)
     skvideo.io.vwrite("swap21.mp4", swappedVid2)
 
 

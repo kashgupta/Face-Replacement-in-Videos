@@ -243,10 +243,10 @@ def faceSwap(img1, img2, oldFacialLandmarks1, oldFacialLandmarks2):
     faceCenter = (r[0]+int(r[2]/2), r[1]+int(r[3]/2))
 
     #do the blending
-    finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
+    finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.MIXED_CLONE)
 
     #show the reesult
     #cv2.imshow('image', finalImage)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
-    return finalImage.astype(np.int_), landmarks1, landmarks2
+    return finalImage.astype(np.uint8), landmarks1, landmarks2
