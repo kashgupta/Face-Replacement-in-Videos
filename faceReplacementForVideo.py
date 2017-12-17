@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from faceswapp import faceSwap
 import imageio
 from helpers4C import videoToNumpy
+import skvideo.io
 
 def faceReplacementForVideo(video1, video2):
     '''
@@ -59,30 +60,43 @@ def faceReplacementForVideo(video1, video2):
     '''
     frames1 = videoToNumpy(video1)
     frames2 = videoToNumpy(video2)
-
+    print len(frames1)
+    print len(frames2)
+    landmarks1 = [];
+    landmarks2 = [];
+    '''
     #Allocate Memory for swapped vid 1
     [h1, w1, _] = frames1[0].shape
-    swappedVid1 = np.zeros((len(frames1), h1, w1, 3), dtype=np.int_)
+    swappedVid1 = np.zeros((len(frames1) - 1, h1, w1, 3), dtype=np.uint8)
 
     #Generate frames for swapped vid 1
-    for i in range(len(frames1)):
+    for i in range(len(frames1) - 1):
         if i < len(frames2): # handle when vid1 is longer than vid1
             img1 = frames2[i]
-        swappedVid1[i] = faceSwap(img1, frames1[i])
+        else:
+            img1 = frames2[len(frames2) - 1]
+        print(i)
+        swappedVid1[i], landmarks1, landmarks2 = faceSwap(img1, frames1[i], landmarks1, landmarks2)
 
     #Allocate Memory for swapped vid 2
     [h2, w2, _] = frames2[0].shape
-    swappedVid2 = np.zeros((len(frames2), h2, w2, 3), dtype=np.int_)
+    swappedVid2 = np.zeros((len(frames2) - 1, h2, w2, 3), dtype=np.uint8)
+    '''
 
     #Generate frames for swapped vid 2
-    for j in range(len(frames2)):
+    for j in range(len(frames2) - 1):
         if j < len(frames1): #handle when vid2 is longer than vid 1
             img1 = frames1[j]
-        swappedVid2[j] = faceSwap(img1, frames2[j])
+        else:
+            img1 = frames1[len(frames1) - 1]
+        print j
+        swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceSwap(img1, frames2[j], landmarks1, landmarks2)
 
-    imageio.mimwrite('swap12.avi', swappedVid1, 30)
-    imageio.mimwrite('swap21.avi', swappedVid2, 30)
-    
+    #np.save('swap21.npy', swappedVid2)
+    #imageio.mimwrite('swap12.avi', swappedVid1, 30)
+    #imageio.mimwrite('swap21.mp4', swappedVid2, fps=30)
+    skvideo.io.write("swap12.mp4", swappedVid1)
+    skvideo.io.vwrite("swap21.mp4", swappedVid2)
 
 
 

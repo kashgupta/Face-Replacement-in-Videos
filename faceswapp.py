@@ -129,7 +129,7 @@ def warpTriangle(img1, img2, t1, t2) :
     img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] = img2[r2[1]:r2[1]+r2[3], r2[0]:r2[0]+r2[2]] + img2Rect 
     
 
-def faceSwap(img1, img2):
+def faceSwap(img1, img2, oldFacialLandmarks1, oldFacialLandmarks2):
 
     # detector = dlib.get_frontal_face_detector()  # Face detector
     # predictor = dlib.shape_predictor(
@@ -194,8 +194,14 @@ def faceSwap(img1, img2):
     img1Warped = np.copy(img2);
 
     #find the landmarks
-    landmarks1 = facialLandmark(img1)
-    landmarks2 = facialLandmark(img2)
+    try:
+        landmarks1 = facialLandmark(img1)
+    except UnboundLocalError:
+        landmarks1 = oldFacialLandmarks1
+    try:
+        landmarks2 = facialLandmark(img2)
+    except UnboundLocalError:
+        landmarks2 = oldFacialLandmarks2
 
     #get the convex hull
     indices = cv2.convexHull(np.array(landmarks2), returnPoints = False)
@@ -243,4 +249,4 @@ def faceSwap(img1, img2):
     #cv2.imshow('image', finalImage)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
-    return finalImage.astype(np.int_)
+    return finalImage.astype(np.int_), landmarks1, landmarks2

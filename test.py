@@ -7,6 +7,7 @@ from facialLandmark import facialLandmark
 from scipy.spatial import Delaunay
 import cv2
 import numpy as np
+import skvideo.io
 
 def main():
 
@@ -16,6 +17,8 @@ def main():
     #file2= 'donald_trump.jpg'
 
     faceReplacementForVideo(video1, video2)
+    #skvideo.io.vwrite("outputvideo.mp4", swappedVid21)
+    #imageio.mimwrite('swap21.mp4', swappedVid21, fps=30)
 
 if __name__ ==  "__main__":
     main()
