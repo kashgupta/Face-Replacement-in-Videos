@@ -26,24 +26,24 @@ def faceReplacementForVideo(video1, video2):
         swappedVid1[i,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames1[i], landmarks1, landmarks2)
 
 
-    # #Allocate Memory for swapped vid 2
-    # landmarks1 = []
-    # landmarks2 = []
-    # [h2, w2, _] = frames2[0].shape
-    # swappedVid2 = np.zeros((len(frames2) - 1, h2, w2, 3), dtype=np.uint8)
-    #
-    # #Generate frames for swapped vid 2
-    # for j in range(len(frames2) - 1):
-    #     if j < len(frames1) - 1: #handle when vid2 is longer than vid 1
-    #         img1 = frames1[j]
-    #     else:
-    #         img1 = frames1[len(frames1) - 2]
-    #     print j
-    #     swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames2[j], landmarks1, landmarks2)
+    #Allocate Memory for swapped vid 2
+    landmarks1 = []
+    landmarks2 = []
+    [h2, w2, _] = frames2[0].shape
+    swappedVid2 = np.zeros((len(frames2) - 1, h2, w2, 3), dtype=np.uint8)
+
+    #Generate frames for swapped vid 2
+    for j in range(len(frames2) - 1):
+        if j < len(frames1) - 1: #handle when vid2 is longer than vid 1
+            img1 = frames1[j]
+        else:
+            img1 = frames1[len(frames1) - 2]
+        print j
+        swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames2[j], landmarks1, landmarks2)
 
 
 
     #save as a video
-    skvideo.io.vwrite("MrRobot_on_FrankUnderwood.mp4", swappedVid1)
-    skvideo.io.vwrite("FrankUnderwood_on_MrRobot.mp4", swappedVid2)
+    skvideo.io.vwrite("rajiv_shelly.mp4", swappedVid1)
+    skvideo.io.vwrite("shelly_rajiv.mp4", swappedVid2)
 
