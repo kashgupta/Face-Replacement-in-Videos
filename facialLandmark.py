@@ -11,6 +11,8 @@ def facialLandmark(img):
     predictor = dlib.shape_predictor(predictor_path)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8)) # improve image contrast
+    gray = clahe.apply(gray)
     dets = detector(gray, 0)
 
     for k, d in enumerate(dets):
