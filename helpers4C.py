@@ -1,6 +1,4 @@
 import cv2
-import numpy as np
-
 
 def videoToNumpy(filepath):
     vidcap = cv2.VideoCapture(filepath)
