@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from faceswapp import faceSwap
+from faceReplacement import faceReplacement
 import imageio
 from helpers4C import videoToNumpy
 import skvideo.io
@@ -62,42 +63,41 @@ def faceReplacementForVideo(video1, video2):
     frames2 = videoToNumpy(video2)
     landmarks1 = [];
     landmarks2 = [];
-    '''
+
+    print len(frames1)
     #Allocate Memory for swapped vid 1
     [h1, w1, _] = frames1[0].shape
     swappedVid1 = np.zeros((len(frames1) - 1, h1, w1, 3), dtype=np.uint8)
 
     #Generate frames for swapped vid 1
     for i in range(len(frames1) - 1):
-        if i < len(frames2): # handle when vid1 is longer than vid1
+        if i < len(frames2) - 1: # handle when vid1 is longer than vid1
             img1 = frames2[i]
         else:
-            img1 = frames2[len(frames2) - 1]
+            img1 = frames2[len(frames2) - 2]
         print(i)
-        swappedVid1[i], landmarks1, landmarks2 = faceSwap(img1, frames1[i], landmarks1, landmarks2)
-        
-    '''
+        swappedVid1[i,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames1[i], landmarks1, landmarks2)
+
 
     #Allocate Memory for swapped vid 2
+    landmarks1 = []
+    landmarks2 = []
     [h2, w2, _] = frames2[0].shape
     swappedVid2 = np.zeros((len(frames2) - 1, h2, w2, 3), dtype=np.uint8)
 
     #Generate frames for swapped vid 2
     for j in range(len(frames2) - 1):
-        if j < len(frames1): #handle when vid2 is longer than vid 1
+        if j < len(frames1) - 1: #handle when vid2 is longer than vid 1
             img1 = frames1[j]
         else:
-            img1 = frames1[len(frames1) - 1]
+            img1 = frames1[len(frames1) - 2]
         print j
-        swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceSwap(img1, frames2[j], landmarks1, landmarks2)
-        if j == 0:
-            plt.imsave('image0.png', swappedVid2[0])
+        swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames2[j], landmarks1, landmarks2)
 
-    #np.save('swap21.npy', swappedVid2)
     #imageio.mimwrite('swap12.avi', swappedVid1, 30)
     #imageio.mimwrite('swap21.mp4', swappedVid2, fps=30)
-    #skvideo.io.write("swap12.mp4", swappedVid1)
-    skvideo.io.vwrite("swap21.mp4", swappedVid2)
+    skvideo.io.vwrite("marquesbrownlee_on_themartian.mp4", swappedVid1)
+    skvideo.io.vwrite("themartian_on_marquesbrownlee.mp4", swappedVid2)
 
 
 

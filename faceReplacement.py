@@ -4,14 +4,21 @@ import numpy as np
 from facialLandmark import facialLandmark
 from warpTriangle import warpTriangle
 
-def faceReplacement(img1File, img2File):
-    img1 = cv2.imread(img1File);
-    img2 = cv2.imread(img2File);
+def faceReplacement(img1, img2, oldFacialLandmarks1, oldFacialLandmarks2):
+    #img1 = cv2.imread(img1File);
+    #img2 = cv2.imread(img2File);
     img1Warped = np.copy(img2);
 
     #find the landmarks
-    landmarks1 = facialLandmark(img1)
-    landmarks2 = facialLandmark(img2)
+    try:
+        landmarks1 = facialLandmark(img1)
+    except UnboundLocalError:
+        landmarks1 = oldFacialLandmarks1
+    try:
+        landmarks2 = facialLandmark(img2)
+    except UnboundLocalError:
+        landmarks2 = oldFacialLandmarks2
+
 
     #get the convex hull
     indices = cv2.convexHull(np.array(landmarks2), returnPoints = False)
@@ -53,12 +60,12 @@ def faceReplacement(img1File, img2File):
     faceCenter = (r[0]+int(r[2]/2), r[1]+int(r[3]/2))
 
     #do the blending
-    finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
+    #finalImage = cv2.seamlessClone(np.uint8(img1Warped), img2, mask, faceCenter, cv2.NORMAL_CLONE)
 
     #show the reesult
-    cv2.imshow('image', finalImage)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #cv2.imshow('image', finalImage)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
 
     # #do face detection and get bounding boxes
     # #returns numFacesx4x2 where 4 is four corners and 3rd dimension is xy
@@ -165,4 +172,4 @@ def faceReplacement(img1File, img2File):
     # #output = cv2.seamlessClone(src, dst, mask, center, cv2.NORMAL_CLONE)
 
 
-    return [img1Warped]
+    return cv2.cvtColor(np.uint8(img1Warped), cv2.COLOR_BGR2RGB), landmarks1, landmarks2
