@@ -10,17 +10,15 @@ def warpTriangle(img1, img2, tri1, tri2):
     # Offset points by left top corner of the respective rectangles
     tri1Rect = np.zeros((3,2))
     tri2Rect = np.zeros((3,2))
-    tri2RectInt = np.zeros((3,2))
 
     #iterate over the three points
     for i in range(0, 3):
         tri1Rect[i] = ((tri1[i][0] - r1[0]), (tri1[i][1] - r1[1]))
         tri2Rect[i] = (((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
-        tri2RectInt[i] = (((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
 
     # Get mask
     mask = np.zeros((r2[3], r2[2], 3), dtype=np.float32)
-    cv2.fillConvexPoly(mask, np.int32(tri2RectInt), (1.0, 1.0, 1.0), 16, 0);
+    cv2.fillConvexPoly(mask, np.int32(tri2Rect), (1.0, 1.0, 1.0), 16, 0);
 
     # Apply warpImage to rectangles
     img1Rect = img1[r1[1]:r1[1] + r1[3], r1[0]:r1[0] + r1[2]]
