@@ -11,8 +11,8 @@ import skvideo.io
 
 def main():
 
-    video1 = "./Data/Easy/TheMartian.mp4"
-    video2 = "./Data/Easy/MarquesBrownlee.mp4"
+    video1 = "./Data/Easy/FrankUnderwood.mp4"
+    video2 = "./Data/Easy/MrRobot.mp4"
     #file1= 'ted_cruz.jpg'
     #file2= 'donald_trump.jpg'
 
