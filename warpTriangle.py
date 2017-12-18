@@ -8,15 +8,15 @@ def warpTriangle(img1, img2, tri1, tri2):
     r2 = cv2.boundingRect(np.float32([tri2]))
 
     # Offset points by left top corner of the respective rectangles
-    tri1Rect = []
-    tri2Rect = []
-    tri2RectInt = []
+    tri1Rect = np.zeros((3,2))
+    tri2Rect = np.zeros((3,2))
+    tri2RectInt = np.zeros((3,2))
 
     #iterate over the three points
     for i in range(0, 3):
-        tri1Rect.append(((tri1[i][0] - r1[0]), (tri1[i][1] - r1[1])))
-        tri2Rect.append(((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
-        tri2RectInt.append(((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
+        tri1Rect[i] = ((tri1[i][0] - r1[0]), (tri1[i][1] - r1[1]))
+        tri2Rect[i] = (((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
+        tri2RectInt[i] = (((tri2[i][0] - r2[0]), (tri2[i][1] - r2[1])))
 
     # Get mask
     mask = np.zeros((r2[3], r2[2], 3), dtype=np.float32)

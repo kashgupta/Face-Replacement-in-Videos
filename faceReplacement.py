@@ -23,14 +23,9 @@ def faceReplacement(img1, img2, oldFacialLandmarks1, oldFacialLandmarks2):
     indices = cv2.convexHull(np.array(landmarks2), returnPoints = False)
     hull1 = landmarks1[indices[:,0]]
     hull2 = landmarks2[indices[:,0]]
-    #convert hulls to tuple list
-    hull1 = tuple(map(tuple, hull1))
-    hull2 = tuple(map(tuple, hull2))
 
     #create delanuy triangulation
     tri = Delaunay(hull2).simplices
-    #conver to tuple list
-    tri = tuple(map(tuple, tri))
 
     #for each of the triangles, do the affine warp
     numTriangles = len(tri)
