@@ -27,10 +27,10 @@ def warpTriangle(img1, img2, tri1, tri2):
     size = (r2[2], r2[3])
 
     #do the affine transformation
-    warpMat = cv2.getAffineTransform(np.float32(tri1Rect), np.float32(tri2Rect))
-    img2Rect = cv2.warpAffine(img1Rect, warpMat, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
+    affineWarped = cv2.getAffineTransform(np.float32(tri1Rect), np.float32(tri2Rect))
+    img2Rect = cv2.warpAffine(img1Rect, affineWarped, (size[0], size[1]), None, flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
 
-    #get the masked rectangle
+    #apply mask to img2rectangle
     img2Rect = img2Rect * mask
 
     # Copy triangular region of the rectangular patch to the output image

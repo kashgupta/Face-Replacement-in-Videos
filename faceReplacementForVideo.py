@@ -44,6 +44,6 @@ def faceReplacementForVideo(video1, video2):
 
 
     #save as a video
-    skvideo.io.vwrite("marquesbrownlee_on_themartian.mp4", swappedVid1)
-    #skvideo.io.vwrite("themartian_on_marquesbrownlee.mp4", swappedVid2)
+    skvideo.io.vwrite("MrRobot_on_FrankUnderwood.mp4", swappedVid1)
+    #skvideo.io.vwrite("FrankUnderwood_on_MrRobot.mp4", swappedVid2)
 
