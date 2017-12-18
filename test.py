@@ -1,20 +1,9 @@
 from faceReplacementForVideo import faceReplacementForVideo
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from proj4AdetectFace import detectFace
-from scipy.spatial import ConvexHull
-from facialLandmark import facialLandmark
-from scipy.spatial import Delaunay
-import cv2
-import numpy as np
-import skvideo.io
 
 def main():
 
-    video1 = "./Data/Easy/FrankUnderwood.mp4"
-    video2 = "./Data/Easy/MrRobot.mp4"
-    #file1= 'ted_cruz.jpg'
-    #file2= 'donald_trump.jpg'
+    video1 = "./Data/Easy/TheMartian.mp4"
+    video2 = "./Data/Easy/MarquesBrownlee.mp4"
 
     faceReplacementForVideo(video1, video2)
 
