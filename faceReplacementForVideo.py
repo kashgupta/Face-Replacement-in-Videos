@@ -26,7 +26,7 @@ def faceReplacementForVideo(video1, video2):
         swappedVid1[i,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames1[i], landmarks1, landmarks2)
 
     # save as a video
-    skvideo.io.vwrite("LucianoRosso_2_1_CLAHE.mp4", swappedVid1)
+    skvideo.io.vwrite("face2_on_video1.mp4", swappedVid1)
 
     #Allocate Memory for swapped vid 2
     landmarks1 = []
@@ -43,4 +43,4 @@ def faceReplacementForVideo(video1, video2):
         print j
         swappedVid2[j,:,:,:], landmarks1, landmarks2 = faceReplacement(img1, frames2[j], landmarks1, landmarks2)
 
-    skvideo.io.vwrite("LucianoRosso_1_2_CLAHE.mp4", swappedVid2)
+    skvideo.io.vwrite("face1_on_video2.mp4", swappedVid2)
